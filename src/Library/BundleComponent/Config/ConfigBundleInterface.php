@@ -12,7 +12,7 @@ interface ConfigBundleInterface
     public function findString(string $key, ?array $parameters = null, ?string $default = null): ?string;
     public function findInt(string $key, ?array $parameters = null, ?int $default = null): ?int;
     public function findFloat(string $key, ?array $parameters = null, ?float $default = null): ?float;
-    public function findBool(string $key, ?array $parameters = null, ?bool $default = null): ?bool;
+    public function findBool(string $key, ?array $parameters = null, bool $default = false): bool;
 
     /**
      * @param \Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface $parameterBag

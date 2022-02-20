@@ -13,12 +13,14 @@ use App\Bundle\LeoTelegramSdk\ValueObject\MessageBase;
 use App\Bundle\LeoTelegramSdk\ValueObject\From;
 use App\Bundle\LeoTelegramSdk\ValueObject\MessageInterface;
 use App\Bundle\LeoTelegramSdk\ValueObject\PhotoMessage;
+use App\Bundle\LeoTelegramSdk\ValueObject\Sticker;
+use App\Bundle\LeoTelegramSdk\ValueObject\StickerMessage;
 use App\Bundle\LeoTelegramSdk\ValueObject\TextMessage;
+use App\Bundle\LeoTelegramSdk\ValueObject\Thumb;
 use DateTimeImmutable;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
-use function json_decode;
+use function assert;
 use function str_starts_with;
 
 class ArgumentResolverMessageBuilder implements MessageBuilderInterface
@@ -36,11 +38,14 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
         $message['update_id'] = $data['update_id'];
 
         $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = MessageBase::class;
-        $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::SKELETON_MESSAGE_TYPE;
+        $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::BASE_MESSAGE_TYPE;
 
         if (array_key_exists('photo', $message)) {
             $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = PhotoMessage::class;
             $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::PHOTO_MESSAGE_TYPE;
+        } elseif (array_key_exists('sticker', $message)) {
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = StickerMessage::class;
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::STICKER_MESSAGE_TYPE;
         } elseif (array_key_exists('text', $message)
             && str_starts_with($message['text'], '/')
         ) {
@@ -60,6 +65,7 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
             PhotoMessage::class => $this->buildPhotoMessage(),
             CommandMessage::class => $this->buildCommandMessage(),
             TextMessage::class => $this->buildTextMessage(),
+            StickerMessage::class => $this->buildStickerMessage(),
             default => $this->buildSkeleton(),
         };
     }
@@ -81,6 +87,11 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
     protected function buildPhotoMessage(): PhotoMessage
     {
         return new PhotoMessage($this->buildSkeleton(), $this->buildPhotos());
+    }
+
+    protected function buildStickerMessage(): StickerMessage
+    {
+        return new StickerMessage($this->buildSkeleton(), $this->buildSticker());
     }
 
     protected function buildTextMessage(): TextMessage
@@ -173,7 +184,52 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
         return $photos;
     }
 
-    #[Pure] protected function buildMetadata(): Metadata
+    protected function buildSticker(): Sticker
+    {
+        assert(array_key_exists('sticker', $this->message));
+
+        $sticker = $this->message['sticker'];
+        assert(array_key_exists('file_id', $sticker));
+        assert(array_key_exists('file_unique_id', $sticker));
+        assert(array_key_exists('width', $sticker));
+        assert(array_key_exists('height', $sticker));
+        assert(array_key_exists('file_size', $sticker));
+        assert(array_key_exists('emoji', $sticker));
+        assert(array_key_exists('set_name', $sticker));
+        assert(array_key_exists('is_animated', $sticker));
+        assert(array_key_exists('is_video', $sticker));
+        assert(array_key_exists('thumb', $sticker));
+
+        $thumbMeta = $sticker['thumb'];
+        assert(array_key_exists('file_id', $thumbMeta));
+        assert(array_key_exists('file_unique_id', $thumbMeta));
+        assert(array_key_exists('width', $thumbMeta));
+        assert(array_key_exists('height', $thumbMeta));
+        assert(array_key_exists('file_size', $thumbMeta));
+
+        $thumb = new Thumb(
+            $thumbMeta['file_id'],
+            $thumbMeta['file_unique_id'],
+            $thumbMeta['width'],
+            $thumbMeta['height'],
+            $thumbMeta['file_size']
+        );
+
+        return new Sticker(
+            $sticker['file_id'],
+            $sticker['file_unique_id'],
+            $sticker['width'],
+            $sticker['height'],
+            $sticker['file_size'],
+            $sticker['emoji'],
+            $sticker['set_name'],
+            $sticker['is_animated'],
+            $sticker['is_video'],
+            $thumb
+        );
+    }
+
+    protected function buildMetadata(): Metadata
     {
         return new Metadata(
             $this->message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS],

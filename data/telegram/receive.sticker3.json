@@ -1,0 +1,40 @@
+{
+  "update_id": 300870174,
+  "message": {
+    "message_id": 35,
+    "from": {
+      "id": 341667531,
+      "is_bot": false,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 341667531,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "type": "private"
+    },
+    "date": 1645386751,
+    "sticker": {
+      "width": 512,
+      "height": 512,
+      "emoji": "🐱",
+      "set_name": "instruction_ua",
+      "is_animated": false,
+      "is_video": false,
+      "thumb": {
+        "file_id": "AAMCAgADGQEAAyNiEpv_rUIRzX1oqtjdUS62kLG7tgACZRQAAhAl0Us0SaiE4jlDRAEAB20AAyME",
+        "file_unique_id": "AQADZRQAAhAl0Uty",
+        "file_size": 11118,
+        "width": 320,
+        "height": 320
+      },
+      "file_id": "CAACAgIAAxkBAAMjYhKb_61CEc19aKrY3VEutpCxu7YAAmUUAAIQJdFLNEmohOI5Q0QjBA",
+      "file_unique_id": "AgADZRQAAhAl0Us",
+      "file_size": 21050
+    }
+  }
+}

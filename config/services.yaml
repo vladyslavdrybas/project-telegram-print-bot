@@ -1,21 +1,14 @@
 parameters:
+    default_enable: false
     api:
         telegram_bot:
-            enable: true
+            enable: '%env(default:default_enable:TELEGRAM_BOT_ENABLE)%'
+            test_chat_ids: '341667531'
             connection:
-                telegram:
-                    host:
-                        name: 'host'
-                        value: 'https://api.telegram.org/bot%env(TELEGRAM_BOT_KEY)%'
-                telegram_files:
-                    host:
-                        name: 'host'
-                        value: 'https://api.telegram.org/file/bot%env(TELEGRAM_BOT_KEY)%'
-                self_host:
-                    host:
-                        name: 'host'
-                        value: '%env(SELF_HOST)%'
-            endpoints:
+                telegram: 'https://api.telegram.org/bot%env(TELEGRAM_BOT_KEY)%'
+                telegram_files: 'https://api.telegram.org/file/bot%env(TELEGRAM_BOT_KEY)%'
+                self_host: '%env(SELF_HOST)%'
+            endpoint:
                 webhook_register:
                     connection: 'telegram'
                     method: 'GET'
@@ -24,23 +17,19 @@ parameters:
                         url:
                             name: 'url'
                             type: 'string'
-                            default: '{api|telegram_bot|connection|self_host|host|value}/telegram/sdk/bot/entrypoint'
-                message_send:
-                    connection: 'telegram'
-                    method: 'POST'
-                    path: '/sendmessage'
+                            default: '{api|telegram_bot|connection|self_host}/telegram/sdk/bot/entrypoint'
                 get_file_info:
                     connection: 'telegram'
                     method: 'GET'
-                    path: 'getFile'
+                    path: '/getFile'
                 download_file:
                     connection: 'telegram_files'
                     method: 'GET'
-                    path: ''
+                    path: '/'
                 send_message:
                     connection: 'telegram'
-                    method: 'POST'
-                    path: 'sendMessage'
+                    method: 'GET'
+                    path: '/sendMessage'
 
 services:
     _defaults:

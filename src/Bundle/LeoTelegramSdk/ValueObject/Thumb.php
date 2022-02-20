@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\ValueObject;
 
-class Photo
+class Thumb
 {
     protected string $fileId;
     protected string $fileUniqueId;
     protected int $width;
     protected int $height;
-    protected string $caption = '';
+    protected int $size;
 
     public function __construct(
         string $fileId,
         string $fileUniqueId,
         int $width,
         int $height,
-        string $caption
+        int $size
     ) {
         $this->fileId = $fileId;
         $this->fileUniqueId = $fileUniqueId;
         $this->width = $width;
         $this->height = $height;
-        $this->caption = $caption;
+        $this->size = $size;
     }
 
     /**
@@ -59,10 +59,10 @@ class Photo
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCaption(): string
+    public function getSize(): int
     {
-        return $this->caption;
+        return $this->size;
     }
 }

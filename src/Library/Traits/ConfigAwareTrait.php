@@ -7,10 +7,12 @@ namespace App\Library\Traits;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use function array_shift;
 use function explode;
+use function filter_var;
 use function ltrim;
 use function rtrim;
 use function str_contains;
 use function strlen;
+use const FILTER_VALIDATE_BOOL;
 
 trait ConfigAwareTrait
 {
@@ -89,8 +91,8 @@ trait ConfigAwareTrait
         return $this->find($key, $default, $parameters);
     }
 
-    public function findBool(string $key, ?array $parameters = null, ?bool $default = null): ?bool
+    public function findBool(string $key, ?array $parameters = null, bool $default = false): bool
     {
-        return $this->find($key, $default, $parameters);
+        return filter_var($this->find($key, $default, $parameters), FILTER_VALIDATE_BOOL);
     }
 }

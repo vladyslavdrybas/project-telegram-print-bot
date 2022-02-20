@@ -12,7 +12,8 @@ class Metadata
     public const PHOTO_MESSAGE_TYPE = 'PhotoMessage';
     public const COMMAND_MESSAGE_TYPE = 'CommandMessage';
     public const TEXT_MESSAGE_TYPE = 'TextMessage';
-    public const SKELETON_MESSAGE_TYPE = 'SkeletonMessage';
+    public const BASE_MESSAGE_TYPE = 'BaseMessage';
+    public const STICKER_MESSAGE_TYPE = 'StickerMessage';
 
     protected string $sdkMessageValueObjectClass;
     protected string $type;

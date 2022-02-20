@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\Controller;
 
+use App\Bundle\LeoTelegramSdk\ArgumentResolver\MessageBuilderInterface;
 use App\Bundle\LeoTelegramSdk\TelegramConfig;
 use App\Library\BundleComponent\Config\ConfigBundleInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function assert;
+use function get_class;
+use function in_array;
 use function is_array;
+use function sprintf;
 
 /**
  * @package App\Controller\Telegram
@@ -40,24 +46,21 @@ class SdkController extends AbstractController
     }
 
     /**
-     * @Route("/entrypoint/register", name="entrypoint_register", methods={"GET"})
+     * @Route("/bot/entrypoint/register", name="bot/entrypoint_register", methods={"GET"})
      *
      * @param \App\Library\BundleComponent\Config\ConfigBundleInterface $telegramConfig
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
      *
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function webhookRegister(ConfigBundleInterface $telegramConfig): JsonResponse
+    public function entrypointRegister(ConfigBundleInterface $telegramConfig): JsonResponse
     {
+        if (!$telegramConfig->isEnable()) {
+            return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         $params = [];
-        $connections = $telegramConfig->findArray(TelegramConfig::CONNECTIONS);
-        assert(is_array($connections));
-        $webhookRegisterEndpoint = $telegramConfig->findArray(TelegramConfig::WEBHOOK_REGISTER_ENDPOINT);
-        assert(is_array($webhookRegisterEndpoint));
+        $connections = $telegramConfig->getConnections();
+        $webhookRegisterEndpoint = $telegramConfig->getWebhookRegisterEndpoint();
 
         //@todo move sub params default value extraction into the \App\Library\Traits\ConfigAwareTrait
         $urlParameterKey = $telegramConfig->findString('fields|url|name', $webhookRegisterEndpoint, 'url') ;
@@ -72,7 +75,7 @@ class SdkController extends AbstractController
             );
 
         $connection = $telegramConfig->findString(
-            $telegramConfig->findString('connection', $webhookRegisterEndpoint, '') . '|host|value',
+            $telegramConfig->findString('connection', $webhookRegisterEndpoint, ''),
             $connections
         );
         assert($connection !== null);
@@ -81,12 +84,140 @@ class SdkController extends AbstractController
             . $telegramConfig->findString('path', $webhookRegisterEndpoint)
             . '?url=' . $params[$urlParameterKey];
 
-        $method = $telegramConfig->findString('method', $webhookRegisterEndpoint, 'GET');
-        $registerResponse = $this->httpClient->request($method, $url);
+        $method = $telegramConfig->findString('method', $webhookRegisterEndpoint, 'POST');
+
+        $this->telegramLogger->debug(
+            sprintf(
+                '[%s]',
+                __METHOD__
+            ),
+            [
+                'url' => $url,
+                'method' => $method,
+            ]
+        );
+
+        $response = $this->httpClient->request($method, $url);
+
+        $this->telegramLogger->debug(
+            sprintf(
+                '[%s][%s]',
+                __METHOD__,
+                get_class($response)
+            ),
+            [
+                'status' => $response->getStatusCode(),
+                'content' => $response->toArray(false),
+            ]
+        );
 
         return new JsonResponse([
-                'telegramResponseStatus' => $registerResponse->getStatusCode(),
-                'telegramResponseContent' => $registerResponse->toArray(false),
+                'status' => $response->getStatusCode(),
+                'content' => $response->toArray(false),
             ]);
+    }
+
+    /**
+     * @Route("/bot/entrypoint", name="bot_entrypoint", methods={"POST"})
+     *
+     * @param MessageBuilderInterface $telegramMessageBuilder
+     * @param ConfigBundleInterface $telegramConfig
+     *
+     * @return Response
+     */
+    public function entrypoint(
+        MessageBuilderInterface $telegramMessageBuilder,
+        ConfigBundleInterface $telegramConfig
+    ): Response {
+        if (!$telegramConfig->isEnable()) {
+            return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $telegramMessage = $telegramMessageBuilder->buildMessage();
+        $this->telegramLogger->debug(
+            sprintf(
+                '[%s][%s]',
+                static::class,
+                $telegramMessage->getMetadata()->getType()
+            ),
+            [
+                $telegramMessage->getMetadata()->getSdkMessageValueObjectClass(),
+                $telegramMessage->getMetadata()->getType(),
+                $telegramMessage->getMetadata()->isCommandMessage(),
+                $telegramMessage->getMetadata()->isTextMessage(),
+                (array) $telegramMessage
+            ]
+        );
+
+//        if ($telegramMessage instanceof PhotoMessage) {
+//            $telegramAccount = $telegramAccountFromTelegramMessageBuilder->build($telegramMessage);
+//            $telegramAccount = $entityManager->getRepository(Account::class)->getExistedOrNew($telegramAccount);
+//
+//            $photos = $telegramMessage->getPhotos()->getArrayCopy();
+//            $photo = array_pop($photos);
+//            $telegramPhoto = $userFromTelegramMessageBuilder->build($telegramMessage, $photo, $telegramAccount);
+//            $entityManager->persist($telegramPhoto);
+//            $entityManager->flush();
+//        }
+
+        return new Response('', Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/bot/connection/test", name="bot_connection_test", methods={"GET"})
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \App\Library\BundleComponent\Config\ConfigBundleInterface $telegramConfig
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function connectionTest(
+        Request $request,
+        ConfigBundleInterface $telegramConfig
+    ): JsonResponse
+    {
+        if (!$telegramConfig->isEnable()) {
+            return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $chatId = $request->get('chatId');
+        assert(in_array($chatId, $telegramConfig->getAllowedTestChatIds()));
+
+        $params = [
+            'chat_id' => $chatId,
+            'text' => 'Test:Pass. Stable connection.',
+        ];
+
+        $query = http_build_query($params);
+
+        $url = $telegramConfig->getSendMessageEndpointUrl() . '?' . $query;
+
+        $this->telegramLogger->debug(
+            sprintf(
+                '[%s]',
+                __METHOD__
+            ),
+            [
+                'url' => $url,
+                'method' => $telegramConfig->getSendMessageEndpointMethod(),
+            ]
+        );
+        $response = $this->httpClient->request($telegramConfig->getSendMessageEndpointMethod(), $url);
+
+        $this->telegramLogger->debug(
+            sprintf(
+                '[%s][%s]',
+                __METHOD__,
+                get_class($response)
+            ),
+            [
+                'status' => $response->getStatusCode(),
+                'content' => $response->toArray(false),
+            ]
+        );
+
+        return new JsonResponse([
+            'status' => $response->getStatusCode(),
+            'content' => $response->toArray(false),
+        ]);
     }
 }
