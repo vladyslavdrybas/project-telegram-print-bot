@@ -1,0 +1,21 @@
+version: "3.9"
+
+x-php-variables: &php-environment
+    environment:
+        - PHP_DATE_TIMEZONE=${PHP_DATE_TIMEZONE:-UTC}
+        - APP_ENV=${APP_ENV:-local}
+        - APP_DEBUG=${APP_DEBUG:-1}
+        - APP_SECRET=${APP_SECRET:-APPSECRETEDITME}
+
+services:
+  mailhog:
+      depends_on:
+        - php
+      image: mailhog/mailhog:latest
+      environment:
+        - MH_STORAGE=maildir
+      ports:
+        - ${MAILHOG_PORT:-8030}:8025
+
+volumes:
+    db_data: {}
