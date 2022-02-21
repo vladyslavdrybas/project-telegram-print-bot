@@ -58,33 +58,8 @@ class SdkController extends AbstractController
             return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $params = [];
-        $connections = $telegramConfig->getConnections();
-        $webhookRegisterEndpoint = $telegramConfig->getWebhookRegisterEndpoint();
-
-        //@todo move sub params default value extraction into the \App\Library\Traits\ConfigAwareTrait
-        $urlParameterKey = $telegramConfig->findString('fields|url|name', $webhookRegisterEndpoint, 'url') ;
-        assert($urlParameterKey !== null);
-
-        $params[$urlParameterKey] = preg_replace_callback(
-                '/{[^{}]+}/',
-                function ($matches) use ($telegramConfig) {
-                    return $telegramConfig->findString($matches[0], null, '');
-                },
-                $telegramConfig->findString('fields|url|default', $webhookRegisterEndpoint, '')
-            );
-
-        $connection = $telegramConfig->findString(
-            $telegramConfig->findString('connection', $webhookRegisterEndpoint, ''),
-            $connections
-        );
-        assert($connection !== null);
-
-        $url = $connection
-            . $telegramConfig->findString('path', $webhookRegisterEndpoint)
-            . '?url=' . $params[$urlParameterKey];
-
-        $method = $telegramConfig->findString('method', $webhookRegisterEndpoint, 'POST');
+        $url = $telegramConfig->getWebhookRegisterEndpointUrl();
+        $method = $telegramConfig->getWebhookRegisterEndpointMethod();
 
         $this->telegramLogger->debug(
             sprintf(
@@ -99,7 +74,12 @@ class SdkController extends AbstractController
 
         $response = $this->httpClient->request($method, $url);
 
-        $this->telegramLogger->debug(
+        $level = 'debug';
+        if ($response->getStatusCode() !== 200) {
+            $level = 'error';
+        }
+        $this->telegramLogger->log(
+            $level,
             sprintf(
                 '[%s][%s]',
                 __METHOD__,
@@ -164,6 +144,8 @@ class SdkController extends AbstractController
     }
 
     /**
+     * Use this endpoint to send every 10 minutes healthcare request from the server to telegram
+     *
      * @Route("/bot/connection/test", name="bot_connection_test", methods={"GET"})
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Library\BundleComponent\Config\ConfigBundleInterface $telegramConfig
@@ -203,7 +185,12 @@ class SdkController extends AbstractController
         );
         $response = $this->httpClient->request($telegramConfig->getSendMessageEndpointMethod(), $url);
 
-        $this->telegramLogger->debug(
+        $level = 'debug';
+        if ($response->getStatusCode() !== 200) {
+            $level = 'error';
+        }
+        $this->telegramLogger->log(
+            $level,
             sprintf(
                 '[%s][%s]',
                 __METHOD__,

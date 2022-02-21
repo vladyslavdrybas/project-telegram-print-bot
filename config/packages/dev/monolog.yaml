@@ -1,17 +1,23 @@
 monolog:
     channels:
         - "telegram"
+        - 'rabbitmq'
     handlers:
         telegram:
             type: stream
             path: "%kernel.logs_dir%/telegram.%kernel.environment%.log"
             level: debug
             channels: [telegram]
+        rabbitmq:
+            level:    debug
+            type:     stream
+            path:     '%kernel.logs_dir%/rabbitmq.%kernel.environment%.log'
+            channels: [rabbitmq]
         main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: notice
-            channels: ["!event", "!telegram"]
+            level: debug
+            channels: ["!event", "!telegram", "!telegram"]
 
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration

@@ -1,0 +1,40 @@
+{
+  "update_id": 300870176,
+  "message": {
+    "message_id": 40,
+    "from": {
+      "id": 341667531,
+      "is_bot": false,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 341667531,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "type": "private"
+    },
+    "date": 1645441106,
+    "sticker": {
+      "width": 512,
+      "height": 512,
+      "emoji": "👍",
+      "set_name": "Lord_Voldemort",
+      "is_animated": false,
+      "is_video": false,
+      "thumb": {
+        "file_id": "AAMCAgADGQEAAyhiE3BS6s0WcejdGnDj5kt9YpSi9QACUgADHwFMFceIFqRTvZ8eAQAHbQADIwQ",
+        "file_unique_id": "AQADUgADHwFMFXI",
+        "file_size": 5414,
+        "width": 128,
+        "height": 128
+      },
+      "file_id": "CAACAgIAAxkBAAMoYhNwUurNFnHo3Rpw4-ZLfWKUovUAAlIAAx8BTBXHiBakU72fHiME",
+      "file_unique_id": "AgADUgADHwFMFQ",
+      "file_size": 34930
+    }
+  }
+}

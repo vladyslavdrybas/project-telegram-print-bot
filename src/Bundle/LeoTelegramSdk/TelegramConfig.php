@@ -6,7 +6,7 @@ namespace App\Bundle\LeoTelegramSdk;
 
 use App\Library\BundleComponent\Config\AbstractBundleConfig;
 use function explode;
-use function filter_var;
+use function http_build_query;
 
 class TelegramConfig extends AbstractBundleConfig
 {
@@ -32,7 +32,6 @@ class TelegramConfig extends AbstractBundleConfig
 
         return $this->isEnable;
     }
-
 
     public function getAllowedTestChatIds(): array
     {
@@ -61,6 +60,25 @@ class TelegramConfig extends AbstractBundleConfig
         return $this->webhookRegisterEndpoint;
     }
 
+    public function getWebhookRegisterEndpointMethod(): string
+    {
+        return $this->findString('method', $this->getWebhookRegisterEndpoint(), 'POST');
+    }
+
+    public function getWebhookRegisterEndpointUrl(): string
+    {
+        $path = $this->findString(
+                $this->findString('connection', $this->getWebhookRegisterEndpoint(), ''),
+                $this->getConnections()
+            ) . $this->findString('path', $this->getWebhookRegisterEndpoint(), '');
+
+        $urlParameterKey = $this->findString('fields|url|name', $this->getWebhookRegisterEndpoint(), 'url') ;
+
+        $params[$urlParameterKey] = $this->findString('fields|url|default', $this->getWebhookRegisterEndpoint(), '');
+
+        return $path . '?' . http_build_query($params);
+    }
+
     public function getSendMessageEndpoint(): array
     {
         if (empty($this->sendMessageEndpoint)) {
@@ -72,7 +90,7 @@ class TelegramConfig extends AbstractBundleConfig
 
     public function getSendMessageEndpointMethod(): string
     {
-        return $this->findString('method', $this->getSendMessageEndpoint(), 'POST');
+        return $this->findString('method', $this->getSendMessageEndpoint(), 'GET');
     }
 
     public function getSendMessageEndpointUrl(): string
