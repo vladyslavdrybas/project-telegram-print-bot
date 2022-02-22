@@ -1,0 +1,15 @@
+framework:
+    messenger:
+        transports:
+            leo_telegram_sdk_bot_request_transport:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: leo_telegram_sdk_bot_request_exchange
+                        type: direct
+                        default_publish_routing_key: leo_telegram_sdk_bot_request_key
+                    queues:
+                        telegram_chat_request:
+                            binding_keys: [leo_telegram_sdk_bot_request_key]
+        routing:
+            'App\Bundle\LeoTelegramSdk\Message\BotRequestMessage': leo_telegram_sdk_bot_request_transport

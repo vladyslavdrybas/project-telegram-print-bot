@@ -59,18 +59,18 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
         $this->message = $message;
     }
 
-    public function buildMessage(): MessageInterface
+    public function build(): MessageInterface
     {
         return match ($this->message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS]) {
             PhotoMessage::class => $this->buildPhotoMessage(),
             CommandMessage::class => $this->buildCommandMessage(),
             TextMessage::class => $this->buildTextMessage(),
             StickerMessage::class => $this->buildStickerMessage(),
-            default => $this->buildSkeleton(),
+            default => $this->buildBaseMessage(),
         };
     }
 
-    public function buildSkeleton(): MessageBase
+    public function buildBaseMessage(): MessageBase
     {
         assert(array_key_exists('update_id', $this->message));
         assert(array_key_exists('message_id', $this->message));
@@ -86,26 +86,26 @@ class ArgumentResolverMessageBuilder implements MessageBuilderInterface
 
     protected function buildPhotoMessage(): PhotoMessage
     {
-        return new PhotoMessage($this->buildSkeleton(), $this->buildPhotos());
+        return new PhotoMessage($this->buildBaseMessage(), $this->buildPhotos());
     }
 
     protected function buildStickerMessage(): StickerMessage
     {
-        return new StickerMessage($this->buildSkeleton(), $this->buildSticker());
+        return new StickerMessage($this->buildBaseMessage(), $this->buildSticker());
     }
 
     protected function buildTextMessage(): TextMessage
     {
         assert(array_key_exists('text', $this->message));
 
-        return new TextMessage($this->buildSkeleton(), $this->message['text']);
+        return new TextMessage($this->buildBaseMessage(), $this->message['text']);
     }
 
     protected function buildCommandMessage(): CommandMessage
     {
         assert(array_key_exists('text', $this->message));
 
-        return new CommandMessage($this->buildSkeleton(), $this->message['text']);
+        return new CommandMessage($this->buildBaseMessage(), $this->message['text']);
     }
 
     protected function buildFrom(): From

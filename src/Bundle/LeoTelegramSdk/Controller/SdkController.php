@@ -5,19 +5,21 @@ declare(strict_types=1);
 namespace App\Bundle\LeoTelegramSdk\Controller;
 
 use App\Bundle\LeoTelegramSdk\ArgumentResolver\MessageBuilderInterface;
-use App\Bundle\LeoTelegramSdk\TelegramConfig;
+use App\Bundle\LeoTelegramSdk\Message\BotRequestMessage;
 use App\Library\BundleComponent\Config\ConfigBundleInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function assert;
 use function get_class;
 use function in_array;
-use function is_array;
 use function sprintf;
 
 /**
@@ -36,13 +38,30 @@ class SdkController extends AbstractController
     protected LoggerInterface $telegramLogger;
 
     /**
+     * @var MessageBusInterface
+     */
+    protected MessageBusInterface $messageBus;
+
+    /**
+     * @var SerializerInterface
+     */
+    protected SerializerInterface $serializer;
+
+    /**
      * @param \Symfony\Contracts\HttpClient\HttpClientInterface $httpClient
      * @param \Psr\Log\LoggerInterface $telegramLogger
+     * @param MessageBusInterface $messageBus
      */
-    public function __construct(HttpClientInterface $httpClient, LoggerInterface $telegramLogger)
-    {
+    public function __construct(
+        HttpClientInterface $httpClient,
+        LoggerInterface $telegramLogger,
+        MessageBusInterface $messageBus,
+        SerializerInterface $serializer
+    ) {
         $this->httpClient = $httpClient;
         $this->telegramLogger = $telegramLogger;
+        $this->messageBus = $messageBus;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -113,21 +132,24 @@ class SdkController extends AbstractController
             return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $telegramMessage = $telegramMessageBuilder->buildMessage();
+        $telegramRequest = $telegramMessageBuilder->build();
         $this->telegramLogger->debug(
             sprintf(
                 '[%s][%s]',
                 static::class,
-                $telegramMessage->getMetadata()->getType()
+                $telegramRequest->getMetadata()->getType()
             ),
             [
-                $telegramMessage->getMetadata()->getSdkMessageValueObjectClass(),
-                $telegramMessage->getMetadata()->getType(),
-                $telegramMessage->getMetadata()->isCommandMessage(),
-                $telegramMessage->getMetadata()->isTextMessage(),
-                (array) $telegramMessage
+                $telegramRequest->getMetadata()->getSdkMessageValueObjectClass(),
+                $telegramRequest->getMetadata()->getType(),
+                $telegramRequest->getMetadata()->isCommandMessage(),
+                $telegramRequest->getMetadata()->isTextMessage(),
+                (array) $telegramRequest
             ]
         );
+
+        $message = new BotRequestMessage($this->serializer->serialize($telegramRequest, 'json'));
+        $this->messageBus->dispatch($message);
 
 //        if ($telegramMessage instanceof PhotoMessage) {
 //            $telegramAccount = $telegramAccountFromTelegramMessageBuilder->build($telegramMessage);

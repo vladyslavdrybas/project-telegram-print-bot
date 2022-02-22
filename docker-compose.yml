@@ -21,6 +21,9 @@ x-php-variables: &php-environment
         - TELEGRAM_BOT_ENABLE=${TELEGRAM_BOT_ENABLE:-false}
         - API_KEY_ATTRIBUTE=${API_KEY_ATTRIBUTE:-X-Bot-Api-Key}
         - API_KEY_VALUE=${API_KEY_VALUE:-apikey}
+        - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-0c75d4b5f3439beee9f6e29473b75e09}
+        - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-rabbit}
+        - MESSENGER_TRANSPORT_DSN=${MESSENGER_TRANSPORT_DSN:-amqp://rabbit:0c75d4b5f3439beee9f6e29473b75e09@rabbitmq/%2f/messages}
 
 services:
     postgres:
@@ -29,8 +32,6 @@ services:
           POSTGRES_DB: ${POSTGRES_DB:-app}
           POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nopassword}
           POSTGRES_USER: ${POSTGRES_USER:-app}
-        ports:
-          - ${POSTGRES_PUBLIC_PORT:-5436}:5432
         volumes:
           - db-data:/var/lib/postgresql/data:rw
 
@@ -41,6 +42,7 @@ services:
           target: app_php
         depends_on:
           - postgres
+          - rabbitmq
         volumes:
           - .:/srv/app
           - ./public:/srv/app/public
@@ -56,8 +58,13 @@ services:
         volumes:
           - ./public:/srv/app/public
           - ./var/log/nginx/log:/var/log/nginx
-        ports:
-          - ${NGINX_PUBLIC_PORT:-100}:80
+
+    rabbitmq:
+        image: rabbitmq:3.8-management
+        tty: false
+        environment:
+          RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-rabbit}
+          RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-0c75d4b5f3439beee9f6e29473b75e09}
 
 volumes:
   db-data:

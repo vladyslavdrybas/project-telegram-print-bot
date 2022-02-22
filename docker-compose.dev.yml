@@ -17,5 +17,17 @@ services:
       ports:
         - ${MAILHOG_PORT:-8030}:8025
 
+  rabbitmq:
+      ports:
+        - 5674:5672
+        - 15674:15672
+
+  nginx:
+      ports:
+        - ${NGINX_PUBLIC_PORT:-100}:80
+
+  postgres:
+      ports:
+        - ${POSTGRES_PUBLIC_PORT:-5436}:5432
 volumes:
     db_data: {}

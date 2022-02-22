@@ -43,3 +43,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+
+imports:
+    - { resource: '../src/Bundle/LeoTelegramSdk/Resources/config/packages/messenger.yaml' }
