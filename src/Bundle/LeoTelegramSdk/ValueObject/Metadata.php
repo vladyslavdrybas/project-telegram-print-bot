@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\ValueObject;
 
-use JetBrains\PhpStorm\Immutable;
+use function time;
 
-#[Immutable]
 class Metadata
 {
     public const PHOTO_MESSAGE_TYPE = 'PhotoMessage';
@@ -15,8 +14,9 @@ class Metadata
     public const BASE_MESSAGE_TYPE = 'BaseMessage';
     public const STICKER_MESSAGE_TYPE = 'StickerMessage';
 
-    protected string $sdkMessageValueObjectClass;
+    protected string $class;
     protected string $type;
+    protected int $receivedAt;
 
     protected bool $isPhotoMessage = false;
     protected bool $isCommandMessage = false;
@@ -24,12 +24,13 @@ class Metadata
     protected bool $isSkeletonMessage = false;
 
     public function __construct(
-        string $sdkMessageValueObjectClass,
+        string $class,
         string $type
     ) {
-        $this->sdkMessageValueObjectClass = $sdkMessageValueObjectClass;
+        $this->class = $class;
         $this->type = $type;
         $this->{'is' . $type} = true;
+        $this->receivedAt = time();
     }
 
     /**
@@ -43,9 +44,17 @@ class Metadata
     /**
      * @return string
      */
-    public function getSdkMessageValueObjectClass(): string
+    public function getClass(): string
     {
-        return $this->sdkMessageValueObjectClass;
+        return $this->class;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReceivedAt(): int
+    {
+        return $this->receivedAt;
     }
 
     /**

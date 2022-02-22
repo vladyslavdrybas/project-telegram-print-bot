@@ -45,7 +45,7 @@ class BotRequestHandler implements MessageHandlerInterface
 //                __METHOD__
 //            ),
 //            [
-//                get_class($messageRequest) => $messageRequest->getMetadata()->getSdkMessageValueObjectClass(),
+//                get_class($messageRequest) => $messageRequest->getMetadata()->getClass(),
 //                'text'=> $messageRequest->getText() ,
 //            ]
 //        );

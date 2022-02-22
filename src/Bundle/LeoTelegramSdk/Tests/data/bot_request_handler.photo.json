@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "fileId": "AgACAgIAAxkBAAMzYhUAAa0wjqsehN_1eA8iA9C3qPNHAALjuzEbtDSpSEqihG69DDavAQADAgADcwADIwQ",
+      "fileUniqueId": "AQAD47sxG7Q0qUh4",
+      "width": 90,
+      "height": 35,
+      "caption": ""
+    },
+    {
+      "fileId": "AgACAgIAAxkBAAMzYhUAAa0wjqsehN_1eA8iA9C3qPNHAALjuzEbtDSpSEqihG69DDavAQADAgADbQADIwQ",
+      "fileUniqueId": "AQAD47sxG7Q0qUhy",
+      "width": 320,
+      "height": 124,
+      "caption": ""
+    },
+    {
+      "fileId": "AgACAgIAAxkBAAMzYhUAAa0wjqsehN_1eA8iA9C3qPNHAALjuzEbtDSpSEqihG69DDavAQADAgADeAADIwQ",
+      "fileUniqueId": "AQAD47sxG7Q0qUh9",
+      "width": 800,
+      "height": 310,
+      "caption": ""
+    },
+    {
+      "fileId": "AgACAgIAAxkBAAMzYhUAAa0wjqsehN_1eA8iA9C3qPNHAALjuzEbtDSpSEqihG69DDavAQADAgADeQADIwQ",
+      "fileUniqueId": "AQAD47sxG7Q0qUh-",
+      "width": 1280,
+      "height": 496,
+      "caption": ""
+    }
+  ],
+  "updateId": 300870185,
+  "messageId": 51,
+  "date": "2022-02-22T15:26:37+00:00",
+  "from": {
+    "id": 341667531,
+    "bot": false,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "languageCode": "en"
+  },
+  "chat": {
+    "id": 341667531,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "type": "private"
+  },
+  "metadata": {
+    "type": "PhotoMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\PhotoMessage",
+    "photoMessage": true,
+    "commandMessage": false,
+    "textMessage": false,
+    "skeletonMessage": false
+  }
+}

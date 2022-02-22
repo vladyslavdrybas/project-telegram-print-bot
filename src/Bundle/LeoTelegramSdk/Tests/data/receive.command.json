@@ -1,0 +1,30 @@
+{
+  "update_id": 300870187,
+  "message": {
+    "message_id": 53,
+    "from": {
+      "id": 341667531,
+      "is_bot": false,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 341667531,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "type": "private"
+    },
+    "date": 1645543884,
+    "text": "/command",
+    "entities": [
+      {
+        "offset": 0,
+        "length": 8,
+        "type": "bot_command"
+      }
+    ]
+  }
+} 

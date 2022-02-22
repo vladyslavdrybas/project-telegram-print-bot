@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ArgumentResolver;
+namespace App\Bundle\LeoTelegramSdk\Service\Builder;
 
 use App\Bundle\LeoTelegramSdk\ValueObject\MessageInterface;
 

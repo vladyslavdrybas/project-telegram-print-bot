@@ -1,0 +1,29 @@
+{
+  "command": "/command",
+  "updateId": 300870187,
+  "messageId": 53,
+  "date": "2022-02-22T15:31:24+00:00",
+  "from": {
+    "id": 341667531,
+    "bot": false,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "languageCode": "en"
+  },
+  "chat": {
+    "id": 341667531,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "type": "private"
+  },
+  "metadata": {
+    "type": "CommandMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\CommandMessage",
+    "photoMessage": false,
+    "commandMessage": true,
+    "textMessage": false,
+    "skeletonMessage": false
+  }
+}

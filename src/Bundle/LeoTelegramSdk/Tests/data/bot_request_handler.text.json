@@ -1,0 +1,29 @@
+{
+  "text": "testing messenger",
+  "updateId": 300870183,
+  "messageId": 49,
+  "date": "2022-02-22T15:15:57+00:00",
+  "from": {
+    "id": 341667531,
+    "bot": false,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "languageCode": "en"
+  },
+  "chat": {
+    "id": 341667531,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "type": "private"
+  },
+  "metadata": {
+    "type": "TextMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\TextMessage",
+    "photoMessage": false,
+    "commandMessage": false,
+    "textMessage": true,
+    "skeletonMessage": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "sticker": {
+    "fileId": "CAACAgIAAxkBAAMyYhUAAXfDQkSoTerHsyDKIoIc3w-QAAJ4FgACbahoSPSmHeQxtbMAASME",
+    "fileUniqueId": "AgADeBYAAm2oaEg",
+    "width": 512,
+    "height": 512,
+    "size": 28718,
+    "emoji": "🛡",
+    "setName": "instruction_ua",
+    "animated": false,
+    "video": false,
+    "thumb": {
+      "fileId": "AAMCAgADGQEAAzJiFQABd8NCRKhN6sezIMoighzfD5AAAngWAAJtqGhI9KYd5DG1swABAQAHbQADIwQ",
+      "fileUniqueId": "AQADeBYAAm2oaEhy",
+      "width": 320,
+      "height": 320,
+      "size": 15152
+    }
+  },
+  "updateId": 300870184,
+  "messageId": 50,
+  "date": "2022-02-22T15:25:43+00:00",
+  "from": {
+    "id": 341667531,
+    "bot": false,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "languageCode": "en"
+  },
+  "chat": {
+    "id": 341667531,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "type": "private"
+  },
+  "metadata": {
+    "type": "StickerMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\StickerMessage",
+    "photoMessage": false,
+    "commandMessage": false,
+    "textMessage": false,
+    "skeletonMessage": false
+  }
+}

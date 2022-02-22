@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\Controller;
 
-use App\Bundle\LeoTelegramSdk\ArgumentResolver\MessageBuilderInterface;
 use App\Bundle\LeoTelegramSdk\Message\BotRequestMessage;
+use App\Bundle\LeoTelegramSdk\Service\Builder\MessageBuilderInterface;
 use App\Library\BundleComponent\Config\ConfigBundleInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -140,7 +139,7 @@ class SdkController extends AbstractController
                 $telegramRequest->getMetadata()->getType()
             ),
             [
-                $telegramRequest->getMetadata()->getSdkMessageValueObjectClass(),
+                $telegramRequest->getMetadata()->getClass(),
                 $telegramRequest->getMetadata()->getType(),
                 $telegramRequest->getMetadata()->isCommandMessage(),
                 $telegramRequest->getMetadata()->isTextMessage(),

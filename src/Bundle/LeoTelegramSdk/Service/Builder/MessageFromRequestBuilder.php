@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ArgumentResolver;
+namespace App\Bundle\LeoTelegramSdk\Service\Builder;
 
 use App\Bundle\LeoTelegramSdk\ValueObject\Chat;
 use App\Bundle\LeoTelegramSdk\ValueObject\CommandMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\PhotoCollection;
+use App\Bundle\LeoTelegramSdk\ValueObject\From;
+use App\Bundle\LeoTelegramSdk\ValueObject\MessageBase;
+use App\Bundle\LeoTelegramSdk\ValueObject\MessageInterface;
 use App\Bundle\LeoTelegramSdk\ValueObject\Metadata;
 use App\Bundle\LeoTelegramSdk\ValueObject\Photo;
-use App\Bundle\LeoTelegramSdk\ValueObject\MessageBase;
-use App\Bundle\LeoTelegramSdk\ValueObject\From;
-use App\Bundle\LeoTelegramSdk\ValueObject\MessageInterface;
+use App\Bundle\LeoTelegramSdk\ValueObject\PhotoCollection;
 use App\Bundle\LeoTelegramSdk\ValueObject\PhotoMessage;
 use App\Bundle\LeoTelegramSdk\ValueObject\Sticker;
 use App\Bundle\LeoTelegramSdk\ValueObject\StickerMessage;
@@ -23,7 +23,7 @@ use function array_key_exists;
 use function assert;
 use function str_starts_with;
 
-class ArgumentResolverMessageBuilder implements MessageBuilderInterface
+class MessageFromRequestBuilder implements MessageBuilderInterface
 {
     protected const SDK_MESSAGE_VALUE_OBJECT_CLASS = 'sdk_message_value_object_class';
     protected const SDK_MESSAGE_VALUE_OBJECT_TYPE = 'sdk_message_value_object_TYPE';
