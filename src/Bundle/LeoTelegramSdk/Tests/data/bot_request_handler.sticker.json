@@ -37,7 +37,7 @@
   },
   "metadata": {
     "type": "StickerMessage",
-    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\StickerMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\TelegramRequest\\StickerRequest",
     "photoMessage": false,
     "commandMessage": false,
     "textMessage": false,

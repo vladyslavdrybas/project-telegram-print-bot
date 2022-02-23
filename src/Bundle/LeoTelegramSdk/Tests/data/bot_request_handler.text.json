@@ -20,7 +20,7 @@
   },
   "metadata": {
     "type": "TextMessage",
-    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\TextMessage",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\TelegramRequest\\TextRequest",
     "photoMessage": false,
     "commandMessage": false,
     "textMessage": true,

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
-class CommandMessage extends AbstractMessage
+class CommandRequest extends AbstractRequest
 {
     protected string $command;
 
     public function __construct(
-        MessageBase $messageBase,
+        RequestBase $messageBase,
         string      $command
     ) {
         parent::__construct($messageBase);

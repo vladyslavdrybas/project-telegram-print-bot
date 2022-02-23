@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 use JetBrains\PhpStorm\Immutable;
 
 #[Immutable]
-class TextMessage extends AbstractMessage
+class TextRequest extends AbstractRequest
 {
     protected string $text = '';
 
     public function __construct(
-        MessageBase $messageBase,
+        RequestBase $messageBase,
         string      $text
     ) {
         parent::__construct($messageBase);

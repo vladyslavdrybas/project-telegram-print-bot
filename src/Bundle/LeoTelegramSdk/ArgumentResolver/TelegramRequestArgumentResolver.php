@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\ArgumentResolver;
 
-use App\Bundle\LeoTelegramSdk\Service\Builder\MessageFromRequestBuilder;
+use App\Bundle\LeoTelegramSdk\Service\Builder\TelegramRequestBuilder;
 use App\Bundle\LeoTelegramSdk\Service\Builder\MessageBuilderInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-class RequestArgumentResolver implements ArgumentValueResolverInterface
+class TelegramRequestArgumentResolver implements ArgumentValueResolverInterface
 {
     /**
      * @var \Psr\Log\LoggerInterface
@@ -35,7 +35,7 @@ class RequestArgumentResolver implements ArgumentValueResolverInterface
             $this->telegramLogger->debug(
                 sprintf(
                     '[%s][%s]',
-                    RequestArgumentResolver::class,
+                    TelegramRequestArgumentResolver::class,
                     $argument->getType() ?? 'Unknown'
                 ),
                 [
@@ -59,6 +59,6 @@ class RequestArgumentResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
-        yield new MessageFromRequestBuilder($request);
+        yield new TelegramRequestBuilder($request);
     }
 }

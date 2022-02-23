@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 use function time;
 
 class Metadata
 {
-    public const PHOTO_MESSAGE_TYPE = 'PhotoMessage';
-    public const COMMAND_MESSAGE_TYPE = 'CommandMessage';
-    public const TEXT_MESSAGE_TYPE = 'TextMessage';
+    public const PHOTO_MESSAGE_TYPE = 'PhotoRequest';
+    public const COMMAND_MESSAGE_TYPE = 'CommandRequest';
+    public const TEXT_MESSAGE_TYPE = 'TextRequest';
     public const BASE_MESSAGE_TYPE = 'BaseMessage';
-    public const STICKER_MESSAGE_TYPE = 'StickerMessage';
+    public const STICKER_MESSAGE_TYPE = 'StickerRequest';
 
     protected string $class;
     protected string $type;

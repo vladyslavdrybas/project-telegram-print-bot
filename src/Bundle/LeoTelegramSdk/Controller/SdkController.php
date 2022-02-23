@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\Controller;
 
-use App\Bundle\LeoTelegramSdk\Message\BotRequestMessage;
+use App\Bundle\LeoTelegramSdk\Message\TelegramRequestMessage;
 use App\Bundle\LeoTelegramSdk\Service\Builder\MessageBuilderInterface;
 use App\Library\BundleComponent\Config\ConfigBundleInterface;
 use Psr\Log\LoggerInterface;
@@ -147,10 +147,10 @@ class SdkController extends AbstractController
             ]
         );
 
-        $message = new BotRequestMessage($this->serializer->serialize($telegramRequest, 'json'));
+        $message = new TelegramRequestMessage($this->serializer->serialize($telegramRequest, 'json'));
         $this->messageBus->dispatch($message);
 
-//        if ($telegramMessage instanceof PhotoMessage) {
+//        if ($telegramMessage instanceof PhotoRequest) {
 //            $telegramAccount = $telegramAccountFromTelegramMessageBuilder->build($telegramMessage);
 //            $telegramAccount = $entityManager->getRepository(Account::class)->getExistedOrNew($telegramAccount);
 //

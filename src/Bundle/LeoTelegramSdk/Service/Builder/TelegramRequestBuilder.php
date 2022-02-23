@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\Service\Builder;
 
-use App\Bundle\LeoTelegramSdk\ValueObject\Chat;
-use App\Bundle\LeoTelegramSdk\ValueObject\CommandMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\From;
-use App\Bundle\LeoTelegramSdk\ValueObject\MessageBase;
-use App\Bundle\LeoTelegramSdk\ValueObject\MessageInterface;
-use App\Bundle\LeoTelegramSdk\ValueObject\Metadata;
-use App\Bundle\LeoTelegramSdk\ValueObject\Photo;
-use App\Bundle\LeoTelegramSdk\ValueObject\PhotoCollection;
-use App\Bundle\LeoTelegramSdk\ValueObject\PhotoMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\Sticker;
-use App\Bundle\LeoTelegramSdk\ValueObject\StickerMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\TextMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\Thumb;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Chat;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\CommandRequest;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\From;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\RequestBase;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\RequestInterface;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Metadata;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Photo;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\PhotoCollection;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\PhotoRequest;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Sticker;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\StickerRequest;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\TextRequest;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Thumb;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
 use function assert;
 use function str_starts_with;
 
-class MessageFromRequestBuilder implements MessageBuilderInterface
+class TelegramRequestBuilder implements MessageBuilderInterface
 {
     protected const SDK_MESSAGE_VALUE_OBJECT_CLASS = 'sdk_message_value_object_class';
     protected const SDK_MESSAGE_VALUE_OBJECT_TYPE = 'sdk_message_value_object_TYPE';
@@ -37,40 +37,40 @@ class MessageFromRequestBuilder implements MessageBuilderInterface
         $message = $data['message'];
         $message['update_id'] = $data['update_id'];
 
-        $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = MessageBase::class;
+        $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = RequestBase::class;
         $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::BASE_MESSAGE_TYPE;
 
         if (array_key_exists('photo', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = PhotoMessage::class;
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = PhotoRequest::class;
             $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::PHOTO_MESSAGE_TYPE;
         } elseif (array_key_exists('sticker', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = StickerMessage::class;
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = StickerRequest::class;
             $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::STICKER_MESSAGE_TYPE;
         } elseif (array_key_exists('text', $message)
             && str_starts_with($message['text'], '/')
         ) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = CommandMessage::class;
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = CommandRequest::class;
             $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::COMMAND_MESSAGE_TYPE;
         } elseif (array_key_exists('text', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = TextMessage::class;
+            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = TextRequest::class;
             $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::TEXT_MESSAGE_TYPE;
         }
 
         $this->message = $message;
     }
 
-    public function build(): MessageInterface
+    public function build(): RequestInterface
     {
         return match ($this->message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS]) {
-            PhotoMessage::class => $this->buildPhotoMessage(),
-            CommandMessage::class => $this->buildCommandMessage(),
-            TextMessage::class => $this->buildTextMessage(),
-            StickerMessage::class => $this->buildStickerMessage(),
+            PhotoRequest::class => $this->buildPhotoMessage(),
+            CommandRequest::class => $this->buildCommandMessage(),
+            TextRequest::class => $this->buildTextMessage(),
+            StickerRequest::class => $this->buildStickerMessage(),
             default => $this->buildBaseMessage(),
         };
     }
 
-    public function buildBaseMessage(): MessageBase
+    public function buildBaseMessage(): RequestBase
     {
         assert(array_key_exists('update_id', $this->message));
         assert(array_key_exists('message_id', $this->message));
@@ -81,31 +81,31 @@ class MessageFromRequestBuilder implements MessageBuilderInterface
         $from = $this->buildFrom();
         $chat = $this->buildChat();
 
-        return new MessageBase($updateId, $messageId, $date, $from, $chat, $metadata);
+        return new RequestBase($updateId, $messageId, $date, $from, $chat, $metadata);
     }
 
-    protected function buildPhotoMessage(): PhotoMessage
+    protected function buildPhotoMessage(): PhotoRequest
     {
-        return new PhotoMessage($this->buildBaseMessage(), $this->buildPhotos());
+        return new PhotoRequest($this->buildBaseMessage(), $this->buildPhotos());
     }
 
-    protected function buildStickerMessage(): StickerMessage
+    protected function buildStickerMessage(): StickerRequest
     {
-        return new StickerMessage($this->buildBaseMessage(), $this->buildSticker());
+        return new StickerRequest($this->buildBaseMessage(), $this->buildSticker());
     }
 
-    protected function buildTextMessage(): TextMessage
-    {
-        assert(array_key_exists('text', $this->message));
-
-        return new TextMessage($this->buildBaseMessage(), $this->message['text']);
-    }
-
-    protected function buildCommandMessage(): CommandMessage
+    protected function buildTextMessage(): TextRequest
     {
         assert(array_key_exists('text', $this->message));
 
-        return new CommandMessage($this->buildBaseMessage(), $this->message['text']);
+        return new TextRequest($this->buildBaseMessage(), $this->message['text']);
+    }
+
+    protected function buildCommandMessage(): CommandRequest
+    {
+        assert(array_key_exists('text', $this->message));
+
+        return new CommandRequest($this->buildBaseMessage(), $this->message['text']);
     }
 
     protected function buildFrom(): From

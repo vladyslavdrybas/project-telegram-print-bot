@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 class Sticker
 {
@@ -114,7 +114,7 @@ class Sticker
     }
 
     /**
-     * @return \App\Bundle\LeoTelegramSdk\ValueObject\Thumb
+     * @return \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Thumb
      */
     public function getThumb(): Thumb
     {

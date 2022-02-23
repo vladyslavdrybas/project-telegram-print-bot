@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 use DateTimeImmutable;
 
-class MessageBase implements MessageInterface
+abstract class AbstractRequest implements RequestInterface
 {
     protected int $updateId;
     protected int $messageId;
@@ -15,20 +15,17 @@ class MessageBase implements MessageInterface
     protected Chat $chat;
     protected Metadata $metadata;
 
-    public function __construct(
-        int               $updateId,
-        int               $messageId,
-        DateTimeImmutable $date,
-        From              $from,
-        Chat              $chat,
-        Metadata          $metadata
-    ) {
-        $this->updateId = $updateId;
-        $this->messageId = $messageId;
-        $this->date = $date;
-        $this->from = $from;
-        $this->chat = $chat;
-        $this->metadata = $metadata;
+    /**
+     * @param \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\RequestBase $messageBase
+     */
+    public function __construct(RequestBase $messageBase)
+    {
+        $this->updateId = $messageBase->getUpdateId();
+        $this->messageId = $messageBase->getMessageId();
+        $this->date = $messageBase->getDate();
+        $this->from = $messageBase->getFrom();
+        $this->chat = $messageBase->getChat();
+        $this->metadata = $messageBase->getMetadata();
     }
 
     /**
@@ -56,7 +53,7 @@ class MessageBase implements MessageInterface
     }
 
     /**
-     * @return \App\Bundle\LeoTelegramSdk\ValueObject\From
+     * @return \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\From
      */
     public function getFrom(): From
     {
@@ -64,7 +61,7 @@ class MessageBase implements MessageInterface
     }
 
     /**
-     * @return \App\Bundle\LeoTelegramSdk\ValueObject\Chat
+     * @return \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Chat
      */
     public function getChat(): Chat
     {
@@ -72,7 +69,7 @@ class MessageBase implements MessageInterface
     }
 
     /**
-     * @return \App\Bundle\LeoTelegramSdk\ValueObject\Metadata
+     * @return \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Metadata
      */
     public function getMetadata(): Metadata
     {

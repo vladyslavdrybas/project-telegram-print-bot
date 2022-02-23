@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\Service\Builder;
 
-use App\Bundle\LeoTelegramSdk\ValueObject\PhotoMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\Photo as PhotoValueObject;
 use App\Bundle\LeoTelegramSdk\Entity\Account;
 use App\Bundle\LeoTelegramSdk\Entity\Photo;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Photo as PhotoValueObject;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\PhotoRequest;
 
 class PhotoBuilder
 {
     public function build(
-        PhotoMessage    $photoMessage,
+        PhotoRequest     $photoMessage,
         PhotoValueObject $photoValueObject,
-        Account $telegramAccount
+        Account          $telegramAccount
     ): Photo {
         $telegramPhoto = new Photo();
         $telegramPhoto->setMessageId($photoMessage->getMessageId());

@@ -12,4 +12,4 @@ framework:
                         telegram_chat_request:
                             binding_keys: [leo_telegram_sdk_bot_request_key]
         routing:
-            'App\Bundle\LeoTelegramSdk\Message\BotRequestMessage': leo_telegram_sdk_bot_request_transport
+            'App\Bundle\LeoTelegramSdk\Message\TelegramRequestMessage': leo_telegram_sdk_bot_request_transport

@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
-class StickerMessage extends AbstractMessage
+class StickerRequest extends AbstractRequest
 {
     protected Sticker $sticker;
 
     public function __construct(
-        MessageBase $messageBase,
-        Sticker $sticker
+        RequestBase $messageBase,
+        Sticker     $sticker
     ) {
         parent::__construct($messageBase);
         $this->sticker = $sticker;
     }
 
     /**
-     * @return \App\Bundle\LeoTelegramSdk\ValueObject\Sticker
+     * @return \App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Sticker
      */
     public function getSticker(): Sticker
     {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 use DateTimeImmutable;
 
-interface MessageInterface
+interface RequestInterface
 {
     public function getUpdateId(): int;
     public function getMessageId(): int;

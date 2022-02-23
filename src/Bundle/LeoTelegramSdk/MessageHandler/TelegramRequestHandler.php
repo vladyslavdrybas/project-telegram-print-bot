@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Bundle\LeoTelegramSdk\MessageHandler;
 
-use App\Bundle\LeoTelegramSdk\Message\BotRequestMessage;
-use App\Bundle\LeoTelegramSdk\ValueObject\TextMessage;
+use App\Bundle\LeoTelegramSdk\Message\TelegramRequestMessage;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\TextRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use function get_class;
 use function sprintf;
 
-class BotRequestHandler implements MessageHandlerInterface
+class TelegramRequestHandler implements MessageHandlerInterface
 {
     protected SerializerInterface $serializer;
     protected LoggerInterface $logger;
@@ -25,7 +24,7 @@ class BotRequestHandler implements MessageHandlerInterface
         $this->logger = $telegramLogger;
     }
 
-    public function __invoke(BotRequestMessage $message): void
+    public function __invoke(TelegramRequestMessage $message): void
     {
         $this->logger->debug(
             sprintf(
@@ -37,8 +36,8 @@ class BotRequestHandler implements MessageHandlerInterface
             ]
         );
 
-        /** @var TextMessage $messageRequest */
-//        $messageRequest = $this->serializer->deserialize($message->getMessage(), TextMessage::class, 'json');
+        /** @var TextRequest $messageRequest */
+//        $messageRequest = $this->serializer->deserialize($message->getMessage(), TextRequest::class, 'json');
 //        $this->logger->debug(
 //            sprintf(
 //                '[%s]',

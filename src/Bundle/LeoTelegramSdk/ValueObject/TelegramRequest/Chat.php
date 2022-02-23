@@ -2,34 +2,31 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
 use JetBrains\PhpStorm\Immutable;
 
 #[Immutable]
-class From
+class Chat
 {
     protected int $id;
-    protected bool $isBot;
     protected string $firstName;
     protected string $lastName;
     protected string $userName;
-    protected string $languageCode;
+    protected string $type;
 
     public function __construct(
         int $id,
-        bool $isBot,
         string $firstName,
         string $lastName,
         string $userName,
-        string $languageCode
+        string $type
     ) {
         $this->id = $id;
-        $this->isBot = $isBot;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->userName = $userName;
-        $this->languageCode = $languageCode;
+        $this->type = $type;
     }
 
     /**
@@ -38,14 +35,6 @@ class From
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBot(): bool
-    {
-        return $this->isBot;
     }
 
     /**
@@ -75,8 +64,8 @@ class From
     /**
      * @return string
      */
-    public function getLanguageCode(): string
+    public function getType(): string
     {
-        return $this->languageCode;
+        return $this->type;
     }
 }

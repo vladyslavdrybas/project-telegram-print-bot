@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Bundle\LeoTelegramSdk\ValueObject;
+namespace App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest;
 
-class PhotoMessage extends AbstractMessage
+class PhotoRequest extends AbstractRequest
 {
     protected PhotoCollection $photos;
 
     public function __construct(
-        MessageBase $messageBase,
+        RequestBase     $messageBase,
         PhotoCollection $photos
     ) {
         parent::__construct($messageBase);
