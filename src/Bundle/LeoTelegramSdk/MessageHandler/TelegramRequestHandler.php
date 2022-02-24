@@ -9,6 +9,7 @@ use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\TextRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use function json_decode;
 use function sprintf;
 
 class TelegramRequestHandler implements MessageHandlerInterface
@@ -31,9 +32,7 @@ class TelegramRequestHandler implements MessageHandlerInterface
                 '[%s]',
                 __METHOD__
             ),
-            [
-                $message->getMessage(),
-            ]
+                json_decode($message->getMessage(), true)
         );
 
         /** @var TextRequest $messageRequest */

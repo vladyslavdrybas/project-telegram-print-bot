@@ -1,0 +1,36 @@
+{
+  "update_id": 300870211,
+  "message": {
+    "message_id": 79,
+    "from": {
+      "id": 341667531,
+      "is_bot": false,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 341667531,
+      "first_name": "Vladyslav",
+      "last_name": "Drybas",
+      "username": "VladDrybas",
+      "type": "private"
+    },
+    "date": 1645661260,
+    "document": {
+      "file_name": "8395461.jpeg",
+      "mime_type": "image/jpeg",
+      "thumb": {
+        "file_id": "AAMCAgADGQEAA09iFsxLpnyHbeDL_lxlNwx_UFubvwACMRgAAvF8uEgV_juimqnlMgEAB20AAyME",
+        "file_unique_id": "AQADMRgAAvF8uEhy",
+        "file_size": 28453,
+        "width": 320,
+        "height": 320
+      },
+      "file_id": "BQACAgIAAxkBAANPYhbMS6Z8h23gy_5cZTcMf1Bbm78AAjEYAALxfLhIFf47opqp5TIjBA",
+      "file_unique_id": "AgADMRgAAvF8uEg",
+      "file_size": 29714
+    }
+  }
+}

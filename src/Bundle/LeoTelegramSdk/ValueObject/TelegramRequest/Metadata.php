@@ -8,20 +8,23 @@ use function time;
 
 class Metadata
 {
-    public const PHOTO_MESSAGE_TYPE = 'PhotoRequest';
-    public const COMMAND_MESSAGE_TYPE = 'CommandRequest';
-    public const TEXT_MESSAGE_TYPE = 'TextRequest';
-    public const BASE_MESSAGE_TYPE = 'BaseMessage';
-    public const STICKER_MESSAGE_TYPE = 'StickerRequest';
+    public const BASE_REQUEST_TYPE = 'BaseRequest';
+    public const COMMAND_REQUEST_TYPE = 'CommandRequest';
+    public const TEXT_REQUEST_TYPE = 'TextRequest';
+    public const STICKER_REQUEST_TYPE = 'StickerRequest';
+    public const PHOTO_REQUEST_TYPE = 'PhotoRequest';
+    public const DOCUMENT_REQUEST_TYPE = 'DocumentRequest';
 
     protected string $class;
     protected string $type;
     protected int $receivedAt;
 
-    protected bool $isPhotoMessage = false;
-    protected bool $isCommandMessage = false;
-    protected bool $isTextMessage = false;
-    protected bool $isSkeletonMessage = false;
+    protected bool $isBaseRequest = false;
+    protected bool $isCommandRequest = false;
+    protected bool $isTextRequest = false;
+    protected bool $isStickerRequest = false;
+    protected bool $isPhotoRequest = false;
+    protected bool $isDocumentRequest = false;
 
     public function __construct(
         string $class,
@@ -60,32 +63,48 @@ class Metadata
     /**
      * @return bool
      */
-    public function isPhotoMessage(): bool
+    public function isBaseRequest(): bool
     {
-        return $this->isPhotoMessage;
+        return $this->isBaseRequest;
     }
 
     /**
      * @return bool
      */
-    public function isCommandMessage(): bool
+    public function isCommandRequest(): bool
     {
-        return $this->isCommandMessage;
+        return $this->isCommandRequest;
     }
 
     /**
      * @return bool
      */
-    public function isTextMessage(): bool
+    public function isTextRequest(): bool
     {
-        return $this->isTextMessage;
+        return $this->isTextRequest;
     }
 
     /**
      * @return bool
      */
-    public function isSkeletonMessage(): bool
+    public function isStickerRequest(): bool
     {
-        return $this->isSkeletonMessage;
+        return $this->isStickerRequest;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPhotoRequest(): bool
+    {
+        return $this->isPhotoRequest;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDocumentRequest(): bool
+    {
+        return $this->isDocumentRequest;
     }
 }

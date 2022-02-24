@@ -59,6 +59,6 @@ class TelegramRequestArgumentResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
-        yield new TelegramRequestBuilder($request);
+        yield new TelegramRequestBuilder($request, $this->telegramLogger);
     }
 }

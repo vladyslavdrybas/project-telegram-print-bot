@@ -141,8 +141,8 @@ class SdkController extends AbstractController
             [
                 $telegramRequest->getMetadata()->getClass(),
                 $telegramRequest->getMetadata()->getType(),
-                $telegramRequest->getMetadata()->isCommandMessage(),
-                $telegramRequest->getMetadata()->isTextMessage(),
+                $telegramRequest->getMetadata()->isCommandRequest(),
+                $telegramRequest->getMetadata()->isTextRequest(),
                 (array) $telegramRequest
             ]
         );

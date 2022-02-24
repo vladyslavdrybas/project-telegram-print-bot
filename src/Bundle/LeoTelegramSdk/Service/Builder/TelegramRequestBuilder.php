@@ -6,6 +6,8 @@ namespace App\Bundle\LeoTelegramSdk\Service\Builder;
 
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Chat;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\CommandRequest;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Document;
+use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\DocumentRequest;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\From;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\RequestBase;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\RequestInterface;
@@ -18,59 +20,78 @@ use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\StickerRequest;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\TextRequest;
 use App\Bundle\LeoTelegramSdk\ValueObject\TelegramRequest\Thumb;
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
 use function assert;
+use function sprintf;
 use function str_starts_with;
 
 class TelegramRequestBuilder implements MessageBuilderInterface
 {
-    protected const SDK_MESSAGE_VALUE_OBJECT_CLASS = 'sdk_message_value_object_class';
-    protected const SDK_MESSAGE_VALUE_OBJECT_TYPE = 'sdk_message_value_object_TYPE';
+    protected const SDK_REQUEST_VALUE_OBJECT_CLASS = 'sdk_request_value_object_class';
+    protected const SDK_REQUEST_VALUE_OBJECT_TYPE = 'sdk_request_value_object_type';
 
     protected array $message;
+    protected LoggerInterface $logger;
 
     public function __construct(
-        Request $request
+        Request $request,
+        LoggerInterface $telegramLogger
     ) {
+        $this->logger = $telegramLogger;
+
         $data = $request->toArray();
         $message = $data['message'];
         $message['update_id'] = $data['update_id'];
 
-        $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = RequestBase::class;
-        $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::BASE_MESSAGE_TYPE;
+        $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = RequestBase::class;
+        $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::BASE_REQUEST_TYPE;
 
         if (array_key_exists('photo', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = PhotoRequest::class;
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::PHOTO_MESSAGE_TYPE;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = PhotoRequest::class;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::PHOTO_REQUEST_TYPE;
         } elseif (array_key_exists('sticker', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = StickerRequest::class;
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::STICKER_MESSAGE_TYPE;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = StickerRequest::class;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::STICKER_REQUEST_TYPE;
+        } elseif (array_key_exists('document', $message)) {
+            $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = DocumentRequest::class;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::DOCUMENT_REQUEST_TYPE;
         } elseif (array_key_exists('text', $message)
             && str_starts_with($message['text'], '/')
         ) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = CommandRequest::class;
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::COMMAND_MESSAGE_TYPE;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = CommandRequest::class;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::COMMAND_REQUEST_TYPE;
         } elseif (array_key_exists('text', $message)) {
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS] = TextRequest::class;
-            $message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE] = Metadata::TEXT_MESSAGE_TYPE;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_CLASS] = TextRequest::class;
+            $message[static::SDK_REQUEST_VALUE_OBJECT_TYPE] = Metadata::TEXT_REQUEST_TYPE;
         }
+
+        $this->logger->debug(
+            sprintf(
+                '[%s][%s]',
+                __METHOD__,
+                __LINE__
+            ),
+            $message
+        );
 
         $this->message = $message;
     }
 
     public function build(): RequestInterface
     {
-        return match ($this->message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS]) {
-            PhotoRequest::class => $this->buildPhotoMessage(),
-            CommandRequest::class => $this->buildCommandMessage(),
-            TextRequest::class => $this->buildTextMessage(),
-            StickerRequest::class => $this->buildStickerMessage(),
-            default => $this->buildBaseMessage(),
+        return match ($this->message[static::SDK_REQUEST_VALUE_OBJECT_CLASS]) {
+            PhotoRequest::class => $this->buildPhotoRequest(),
+            CommandRequest::class => $this->buildCommandRequest(),
+            TextRequest::class => $this->buildTextRequest(),
+            StickerRequest::class => $this->buildStickerRequest(),
+            DocumentRequest::class => $this->buildDocumentRequest(),
+            default => $this->buildBaseRequest(),
         };
     }
 
-    public function buildBaseMessage(): RequestBase
+    public function buildBaseRequest(): RequestBase
     {
         assert(array_key_exists('update_id', $this->message));
         assert(array_key_exists('message_id', $this->message));
@@ -84,28 +105,33 @@ class TelegramRequestBuilder implements MessageBuilderInterface
         return new RequestBase($updateId, $messageId, $date, $from, $chat, $metadata);
     }
 
-    protected function buildPhotoMessage(): PhotoRequest
+    protected function buildPhotoRequest(): PhotoRequest
     {
-        return new PhotoRequest($this->buildBaseMessage(), $this->buildPhotos());
+        return new PhotoRequest($this->buildBaseRequest(), $this->buildPhotos());
     }
 
-    protected function buildStickerMessage(): StickerRequest
+    protected function buildStickerRequest(): StickerRequest
     {
-        return new StickerRequest($this->buildBaseMessage(), $this->buildSticker());
+        return new StickerRequest($this->buildBaseRequest(), $this->buildSticker());
     }
 
-    protected function buildTextMessage(): TextRequest
+    protected function buildDocumentRequest(): DocumentRequest
+    {
+        return new DocumentRequest($this->buildBaseRequest(), $this->buildDocument());
+    }
+
+    protected function buildTextRequest(): TextRequest
     {
         assert(array_key_exists('text', $this->message));
 
-        return new TextRequest($this->buildBaseMessage(), $this->message['text']);
+        return new TextRequest($this->buildBaseRequest(), $this->message['text']);
     }
 
-    protected function buildCommandMessage(): CommandRequest
+    protected function buildCommandRequest(): CommandRequest
     {
         assert(array_key_exists('text', $this->message));
 
-        return new CommandRequest($this->buildBaseMessage(), $this->message['text']);
+        return new CommandRequest($this->buildBaseRequest(), $this->message['text']);
     }
 
     protected function buildFrom(): From
@@ -200,21 +226,6 @@ class TelegramRequestBuilder implements MessageBuilderInterface
         assert(array_key_exists('is_video', $sticker));
         assert(array_key_exists('thumb', $sticker));
 
-        $thumbMeta = $sticker['thumb'];
-        assert(array_key_exists('file_id', $thumbMeta));
-        assert(array_key_exists('file_unique_id', $thumbMeta));
-        assert(array_key_exists('width', $thumbMeta));
-        assert(array_key_exists('height', $thumbMeta));
-        assert(array_key_exists('file_size', $thumbMeta));
-
-        $thumb = new Thumb(
-            $thumbMeta['file_id'],
-            $thumbMeta['file_unique_id'],
-            $thumbMeta['width'],
-            $thumbMeta['height'],
-            $thumbMeta['file_size']
-        );
-
         return new Sticker(
             $sticker['file_id'],
             $sticker['file_unique_id'],
@@ -225,15 +236,57 @@ class TelegramRequestBuilder implements MessageBuilderInterface
             $sticker['set_name'],
             $sticker['is_animated'],
             $sticker['is_video'],
-            $thumb
+            $this->buildThumb($sticker['thumb'])
+        );
+    }
+
+    protected function buildDocument(): Document
+    {
+        assert(array_key_exists('document', $this->message));
+
+        $document = $this->message['document'];
+        assert(array_key_exists('file_id', $document));
+        assert(array_key_exists('file_unique_id', $document));
+        assert(array_key_exists('file_size', $document));
+        assert(array_key_exists('file_name', $document));
+        assert(array_key_exists('mime_type', $document));
+        assert(array_key_exists('thumb', $document));
+
+        $caption = $document['caption'] ?? '';
+
+        return  new Document(
+            $document['file_id'],
+            $document['file_unique_id'],
+            $document['file_size'],
+            $document['file_name'],
+            $document['mime_type'],
+            $caption,
+            $this->buildThumb($document['thumb'])
+        );
+    }
+
+    protected function buildThumb(array $thumb): Thumb
+    {
+        assert(array_key_exists('file_id', $thumb));
+        assert(array_key_exists('file_unique_id', $thumb));
+        assert(array_key_exists('width', $thumb));
+        assert(array_key_exists('height', $thumb));
+        assert(array_key_exists('file_size', $thumb));
+
+        return new Thumb(
+            $thumb['file_id'],
+            $thumb['file_unique_id'],
+            $thumb['width'],
+            $thumb['height'],
+            $thumb['file_size']
         );
     }
 
     protected function buildMetadata(): Metadata
     {
         return new Metadata(
-            $this->message[static::SDK_MESSAGE_VALUE_OBJECT_CLASS],
-            $this->message[static::SDK_MESSAGE_VALUE_OBJECT_TYPE]
+            $this->message[static::SDK_REQUEST_VALUE_OBJECT_CLASS],
+            $this->message[static::SDK_REQUEST_VALUE_OBJECT_TYPE]
         );
     }
 }

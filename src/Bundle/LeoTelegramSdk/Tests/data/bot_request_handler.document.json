@@ -1,0 +1,46 @@
+{
+  "document": {
+    "fileId": "BQACAgIAAxkBAANPYhbMS6Z8h23gy_5cZTcMf1Bbm78AAjEYAALxfLhIFf47opqp5TIjBA",
+    "fileUniqueId": "AgADMRgAAvF8uEg",
+    "size": 29714,
+    "fileName": "8395461.jpeg",
+    "mimeType": "image/jpeg",
+    "thumb": {
+      "fileId": "AAMCAgADGQEAA09iFsxLpnyHbeDL_lxlNwx_UFubvwACMRgAAvF8uEgV_juimqnlMgEAB20AAyME",
+      "fileUniqueId": "AQADMRgAAvF8uEhy",
+      "width": 320,
+      "height": 320,
+      "size": 28453
+    },
+    "caption": ""
+  },
+  "updateId": 300870211,
+  "messageId": 79,
+  "date": "2022-02-24T00:07:40+00:00",
+  "from": {
+    "id": 341667531,
+    "bot": false,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "languageCode": "en"
+  },
+  "chat": {
+    "id": 341667531,
+    "firstName": "Vladyslav",
+    "lastName": "Drybas",
+    "userName": "VladDrybas",
+    "type": "private"
+  },
+  "metadata": {
+    "type": "DocumentRequest",
+    "class": "App\\Bundle\\LeoTelegramSdk\\ValueObject\\TelegramRequest\\DocumentRequest",
+    "receivedAt": 1645661261,
+    "baseRequest": false,
+    "commandRequest": false,
+    "textRequest": false,
+    "stickerRequest": false,
+    "photoRequest": false,
+    "documentRequest": true
+  }
+}
