@@ -59,7 +59,7 @@ trait ConfigAwareTrait
     }
 
     /**
-     * @param array $parameters
+     * @param array|null $parameters
      * @param string $key
      * @param float|array|bool|int|string|null $default
      * @return array|bool|string|int|float|null

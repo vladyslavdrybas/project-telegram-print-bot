@@ -73,6 +73,7 @@ class SdkController extends AbstractController
     public function entrypointRegister(ConfigBundleInterface $telegramConfig): JsonResponse
     {
         if (!$telegramConfig->isEnable()) {
+            $this->telegramLogger->debug('disabled', [$telegramConfig->isEnable()]);
             return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
         }
 
@@ -128,6 +129,7 @@ class SdkController extends AbstractController
         ConfigBundleInterface $telegramConfig
     ): Response {
         if (!$telegramConfig->isEnable()) {
+            $this->telegramLogger->debug('disabled', [$telegramConfig->isEnable()]);
             return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
         }
 
@@ -179,6 +181,7 @@ class SdkController extends AbstractController
     ): JsonResponse
     {
         if (!$telegramConfig->isEnable()) {
+            $this->telegramLogger->debug('disabled', [$telegramConfig->isEnable()]);
             return new JsonResponse([], JsonResponse::HTTP_NOT_FOUND);
         }
 

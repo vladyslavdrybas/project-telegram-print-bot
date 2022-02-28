@@ -18,7 +18,8 @@ x-php-variables: &php-environment
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-nopassword}
         - DATABASE_URL=${DATABASE_URL:-postgresql://app:nopassword@postgres:5432/app?serverVersion=13&charset=utf8}
         - TELEGRAM_BOT_KEY=${TELEGRAM_BOT_KEY:-0000000000:d8f1cea78d516a98c71d1f75c916536c-xxxxxx}
-        - TELEGRAM_BOT_ENABLE=${TELEGRAM_BOT_ENABLE:-false}
+        - TELEGRAM_BOT_ENABLE=${TELEGRAM_BOT_ENABLE:-0}
+        - TELEGRAM_BOT_SECURE_TOKEN=${TELEGRAM_BOT_SECURE_TOKEN:-9f0047252d96b2f210eefaa50b933a24}
         - API_KEY_ATTRIBUTE=${API_KEY_ATTRIBUTE:-X-Bot-Api-Key}
         - API_KEY_VALUE=${API_KEY_VALUE:-apikey}
         - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-0c75d4b5f3439beee9f6e29473b75e09}

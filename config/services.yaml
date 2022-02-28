@@ -1,5 +1,7 @@
 parameters:
     default_enable: false
+    telegram_bot_secure_token: '%env(TELEGRAM_BOT_SECURE_TOKEN)%'
+
     api:
         telegram_bot:
             enable: '%env(default:default_enable:TELEGRAM_BOT_ENABLE)%'
